@@ -1,5 +1,22 @@
 # motorPIGCS2 Releases
 
+## __R1-3 (2026-01-29)__
+R1-3 is a release based on the master branch.
+
+### Changes since R1-2
+
+#### New features
+* Pull request [#29](https://github.com/epics-motor/motorPIGCS2/pull/29): [Guilherme Rodrigues de Lima](https://github.com/guirodrigueslima) added coordinate-system support for the C-887 hexapod controller
+
+#### Modifications to existing features
+* Pull request [#10](https://github.com/epics-motor/motorPIGCS2/pull/10): Closed-loop improvements and bug fixes from [Augusto Horita](https://github.com/AugustoHorita) and [Guilherme Rodrigues de Lima](https://github.com/guirodrigueslima)
+
+#### Bug fixes
+* Pull request [#28](https://github.com/epics-motor/motorPIGCS2/pull/28): Reduced the number of debug messages that are printed by default, which resolved [#27](https://github.com/epics-motor/motorPIGCS2/issues/27) reported by [mellguth2](https://github.com/mellguth2)
+
+#### Continuous integration
+* Upgraded ci-scripts (v3.4.1)
+
 ## __R1-2 (2023-05-05)__
 R1-2 is a release based on the master branch.
 
