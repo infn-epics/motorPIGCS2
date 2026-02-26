@@ -1,5 +1,13 @@
 # motorPIGCS2 Releases
 
+## __R1-3-1 (2026-02-26)__
+R1-3-1 is a release based on the master branch.
+
+### Changes since R1-3
+
+#### Bug fixes
+* Pull request [#32](https://github.com/epics-motor/motorPIGCS2/pull/32): Fixed PIasynController.cpp compile errors for VxWorks
+
 ## __R1-3 (2026-01-29)__
 R1-3 is a release based on the master branch.
 
