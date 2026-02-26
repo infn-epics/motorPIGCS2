@@ -117,7 +117,7 @@ public:
     static const size_t MAX_NR_AXES = 64;
 	bool m_bAnyAxisMoving;
     int m_LastError;
-    int m_targetMode = 0;
+    int m_targetMode;
 
     static void getStatusFromBitMask(long mask, int& homing, int& moving, int& negLimit, int& posLimit, int& servoControl);
 

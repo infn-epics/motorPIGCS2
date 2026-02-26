@@ -652,6 +652,7 @@ PIGCSController::PIGCSController(PIInterface* pInterface, const char* szIDN)
 , m_bAnyAxisMoving(false)
 , m_nrFoundAxes(0)
 , m_LastError(0)
+, m_targetMode(0)
 {
 	strncpy(szIdentification, szIDN, 199);
 }
