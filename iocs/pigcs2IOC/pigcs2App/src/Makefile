@@ -34,7 +34,7 @@ pigcs2_LIBS += motor
 pigcs2_LIBS += asyn
 #endif
 #ifdef SNCSEQ
-pigcs2_LIBS += seq pv
+#pigcs2_LIBS += seq pv
 #endif
 
 # pigcs2_registerRecordDeviceDriver.cpp derives from pigcs2.dbd

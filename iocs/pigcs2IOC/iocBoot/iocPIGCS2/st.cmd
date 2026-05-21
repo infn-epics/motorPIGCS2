@@ -13,7 +13,19 @@ cd "${TOP}/iocBoot/${IOC}"
 ## motorUtil (allstop & alldone)
 dbLoadRecords("$(MOTOR)/db/motorUtil.db", "P=pigcs2:")
 
+# --- Motor referencing before driver connection --
+
+iocshCmd("echo RON 1 0 | nc 192.168.117.26 4002 -w 1")
+epicsThreadSleep(1.0)
+
+iocshCmd("echo POS 1 0 | nc 192.168.117.26 4002 -w 1")
+epicsThreadSleep(1.0)
+
+iocshCmd("echo POS? | nc 192.168.117.26 4002 -w 1")
+epicsThreadSleep(1.0)
+
 ##
+## MOTOR_ADDR = IP address and PORT of the motor
 < PI_GCS2.cmd
 #< PI_GCS2_hexapod.cmd
 

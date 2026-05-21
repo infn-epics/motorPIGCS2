@@ -1,4 +1,4 @@
-record(ai, "$(P)$(M)POSITION")
+record(ai, "$(P)$(R)POSITION")
 {
 	field(DTYP, "asynFloat64")
 	field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))PI_SUP_POSITION")
@@ -6,14 +6,14 @@ record(ai, "$(P)$(M)POSITION")
 	field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(M)TARGET")
+record(ao, "$(P)$(R)TARGET")
 {
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PI_SUP_TARGET")
    field(PREC, "5")
 }
 
-record(bo, "$(P)$(M)SERVO")
+record(bo, "$(P)$(R)SERVO")
 {    
    field(DESC, "Set status Servo")
    field(DTYP, "asynInt32")
@@ -23,7 +23,7 @@ record(bo, "$(P)$(M)SERVO")
    
 }
 
-record(bi, "$(P)$(M)RBSERVO")
+record(bi, "$(P)$(R)RBSERVO")
 {
    field(DTYP, "asynInt32")
    field(ZNAM, "Disable")
@@ -32,7 +32,7 @@ record(bi, "$(P)$(M)RBSERVO")
    field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(P)$(M)HLM")
+record(ai, "$(P)$(R)HLM")
 {
 	field(DTYP, "asynFloat64")
 	field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MOTOR_HIGH_LIMIT")
@@ -40,7 +40,7 @@ record(ai, "$(P)$(M)HLM")
 	field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(P)$(M)LLM")
+record(ai, "$(P)$(R)LLM")
 {
 	field(DTYP, "asynFloat64")
 	field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MOTOR_LOW_LIMIT")
