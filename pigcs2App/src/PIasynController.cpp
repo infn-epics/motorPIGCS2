@@ -51,7 +51,7 @@ static const char *driverName = "PIasynDriver";
 static ELLLIST PIasynControllerList;
 static int PIasynControllerListInitialized = 0;
 
-PIasynController::PIasynController(const char *portName, const char* asynPort, int numAxes, int priority, int stackSize, int movingPollPeriod, int idlePollPeriod)
+PIasynController::PIasynController(const char *portName, const char* asynPort, int numAxes, int priority, int stackSize, int movingPollPeriod, int idlePollPeriod, int yesNoRef)
     : asynMotorController(portName, numAxes, 10,
             asynInt32Mask | asynFloat64Mask,
             asynInt32Mask | asynFloat64Mask,
@@ -166,6 +166,12 @@ PIasynController::PIasynController(const char *portName, const char* asynPort, i
 			  asynPort, inputBuff);
 		return;
 	}
+
+    if( yesNoRef == 0) asynPrint(pAsynCom, ASYN_TRACE_ERROR, "PIasynController: the motor will not be referenced.");
+    else if( yesNoRef == 1 ) {
+        this->motorReference(pAsynCom, pInterface);
+    }
+    else asynPrint(pAsynCom, ASYN_TRACE_ERROR, "PIasynController: WARNING - Invalid Reference option, the motor will not be referenced.");
 
 	m_pGCSController->init();
 
@@ -516,6 +522,41 @@ asynStatus PIasynController::configAxis(PIasynAxis *pAxis)
     return(asynSuccess);
 }
 
+void PIasynController::motorReference(asynUser* pAsynCom, PIInterface* pInterface) {
+
+    char axesResp[256];
+    axesResp[0] = '\0';
+    asynStatus status;
+
+    status = pInterface->sendAndReceive("SAI?\n", axesResp, 255, pAsynCom);
+
+    if (status == asynSuccess && strlen(axesResp) > 0) {
+        char *axisID = strtok(axesResp, "\n \r");
+        while (axisID != NULL) {
+            asynPrint(pAsynCom, ASYN_TRACE_ERROR,"PIasynController::motorReference: Starting motor axis '%s' referencing . . . \n", axisID);
+            char cmd[100];
+            
+            sprintf(cmd, "RON %s 0\n", axisID);
+            pInterface->sendOnly(cmd);
+            epicsThreadSleep(1.0);
+
+            sprintf(cmd, "POS %s 0\n", axisID);
+            pInterface->sendOnly(cmd);
+            epicsThreadSleep(1.0);
+
+            char posResp[100];
+            sprintf(cmd, "POS? %s\n", axisID);
+            pInterface->sendAndReceive(cmd, posResp, 99, pAsynCom);
+            epicsThreadSleep(1.0);
+
+            asynPrint(pAsynCom, ASYN_TRACE_ERROR, "PIasynController::motorReference: Motor axis '%s' correctly referenced. Current position: %s\n", axisID, posResp);
+
+            axisID = strtok(NULL, "\n \r");
+        }
+    }
+    else asynPrint(pAsynCom, ASYN_TRACE_ERROR, "PIasynController::motorReference: ERROR: ID axis unknown");
+}
+
 /**\defgroup PIasynTask Routines to implement the motor axis simulation task
 @{
 */
@@ -617,10 +658,10 @@ asynStatus PIasynController::poll()
 
 
 /** Configuration command, called directly or from iocsh */
-extern "C" int PI_GCS2_CreateController(const char *portName, const char* asynPort, int numAxes, int priority, int stackSize, int movingPollingRate, int idlePollingRate)
+extern "C" int PI_GCS2_CreateController(const char *portName, const char* asynPort, int numAxes, int priority, int stackSize, int movingPollingRate, int idlePollingRate, int yesNoRef)
 {
     PIasynController *pasynController
-        = new PIasynController(portName, asynPort, numAxes, priority, stackSize, movingPollingRate, idlePollingRate);
+        = new PIasynController(portName, asynPort, numAxes, priority, stackSize, movingPollingRate, idlePollingRate, yesNoRef);
     pasynController = NULL;
     return(asynSuccess);
 }
@@ -633,17 +674,19 @@ static const iocshArg PI_GCS2_CreateControllerArg3 = {"priority", iocshArgInt};
 static const iocshArg PI_GCS2_CreateControllerArg4 = {"stackSize", iocshArgInt};
 static const iocshArg PI_GCS2_CreateControllerArg5 = {"moving polling time [msec]", iocshArgInt};
 static const iocshArg PI_GCS2_CreateControllerArg6 = {"idle polling time [msec]", iocshArgInt};
+static const iocshArg PI_GCS2_CreateControllerArg7 = {"needs or not motor reference", iocshArgInt};
 static const iocshArg * const PI_GCS2_CreateControllerArgs[] =  {&PI_GCS2_CreateControllerArg0,
                                                           &PI_GCS2_CreateControllerArg1,
                                                           &PI_GCS2_CreateControllerArg2,
                                                           &PI_GCS2_CreateControllerArg3,
                                                           &PI_GCS2_CreateControllerArg4,
                                                           &PI_GCS2_CreateControllerArg5,
-                                                          &PI_GCS2_CreateControllerArg6};
-static const iocshFuncDef PI_GCS2_CreateControllerDef = {"PI_GCS2_CreateController", 7, PI_GCS2_CreateControllerArgs};
+                                                          &PI_GCS2_CreateControllerArg6,
+                                                          &PI_GCS2_CreateControllerArg7};
+static const iocshFuncDef PI_GCS2_CreateControllerDef = {"PI_GCS2_CreateController", 8, PI_GCS2_CreateControllerArgs};
 static void PI_GCS2_CreateControllerCallFunc(const iocshArgBuf *args)
 {
-    PI_GCS2_CreateController(args[0].sval, args[1].sval, args[2].ival, args[3].ival, args[4].ival, args[5].ival, args[6].ival);
+    PI_GCS2_CreateController(args[0].sval, args[1].sval, args[2].ival, args[3].ival, args[4].ival, args[5].ival, args[6].ival, args[7].ival);
 }
 
 

@@ -22,13 +22,14 @@ December 13, 2009
 #include "asynMotorController.h"
 #include "asynMotorAxis.h"
 #include "PIGCS2PiezoCL.h"
+#include "PIInterface.h"
 
 class PIasynAxis;
 class PIGCSController;
 
 class PIasynController : asynMotorController {
 public:
-    PIasynController(const char *portName, const char* asynPort, int numAxes, int priority, int stackSize, int movingPollPeriod, int idlePollPeriod);
+    PIasynController(const char *portName, const char* asynPort, int numAxes, int priority, int stackSize, int movingPollPeriod, int idlePollPeriod, int yesNoRef);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
@@ -42,6 +43,8 @@ public:
     PIasynAxis* getPIAxis(int axisNo) { return (PIasynAxis*)asynMotorController::getAxis(axisNo); }
 
     virtual asynStatus poll();
+
+    void motorReference(asynUser* pAsynCom, PIInterface* pInterface);
 
     u_PIGCS2PiezoCLParams m_CloseLoopParam;
     PIGCS2PiezoCLValues m_CloseLoopValue;
