@@ -13,8 +13,8 @@ asynAutoConnect("C663_ETH", 0, 1)
 asynSetTraceMask("C663_ETH",0,3)
 asynSetTraceIOMask("C663_ETH",0,1)
 
-# PI_GCS2_CreateController(portName, asynPort, numAxes, priority, stackSize, movingPollingRate, idlePollingRate, yesNoRef (1 for non-PI motors))
-PI_GCS2_CreateController("C663", "C663_ETH",1, 0,0, 100, 1000, 1)
+# PI_GCS2_CreateController(portName, asynPort, numAxes, priority, stackSize, movingPollingRate, idlePollingRate, yesNoRef (1 for non-PI motors), configFile)
+PI_GCS2_CreateController("C663", "C663_ETH",1, 0,0, 100, 1000, 1, "config_5101.07-174_175.txt")
 
 # Turn off asyn trace
 asynSetTraceMask("C663_ETH",0,1)

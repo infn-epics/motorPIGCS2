@@ -29,7 +29,7 @@ class PIGCSController;
 
 class PIasynController : asynMotorController {
 public:
-    PIasynController(const char *portName, const char* asynPort, int numAxes, int priority, int stackSize, int movingPollPeriod, int idlePollPeriod, int yesNoRef);
+    PIasynController(const char *portName, const char* asynPort, int numAxes, int priority, int stackSize, int movingPollPeriod, int idlePollPeriod, int yesNoRef, const char* configFile);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
@@ -45,6 +45,7 @@ public:
     virtual asynStatus poll();
 
     void motorReference(asynUser* pAsynCom, PIInterface* pInterface);
+    void driverConfigFromFile(asynUser* pAsynCom, PIInterface* pInterface, const char* configFile);
 
     u_PIGCS2PiezoCLParams m_CloseLoopParam;
     PIGCS2PiezoCLValues m_CloseLoopValue;
