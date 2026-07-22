@@ -539,16 +539,16 @@ void PIasynController::motorReference(asynUser* pAsynCom, PIInterface* pInterfac
             
             sprintf(cmd, "RON %s 0\n", axisID);
             pInterface->sendOnly(cmd);
-            epicsThreadSleep(0.2);
+            epicsThreadSleep(0.5);
 
             sprintf(cmd, "POS %s 0\n", axisID);
             pInterface->sendOnly(cmd);
-            epicsThreadSleep(0.2);
+            epicsThreadSleep(0.5);
 
             char posResp[100];
             sprintf(cmd, "POS? %s\n", axisID);
             pInterface->sendAndReceive(cmd, posResp, 99, pAsynCom);
-            epicsThreadSleep(0.2);
+            epicsThreadSleep(0.5);
 
             asynPrint(pAsynCom, ASYN_TRACE_ERROR, "PIasynController::motorReference: Motor axis '%s' correctly referenced. Current position: %s\n", axisID, posResp);
 
@@ -590,7 +590,7 @@ void PIasynController::driverConfigFromFile(asynUser* pAsynCom, PIInterface* pIn
             }
         
             pInterface->sendOnly(cmd);
-            epicsThreadSleep(0.2);
+            epicsThreadSleep(0.5);
         }
     }
     
