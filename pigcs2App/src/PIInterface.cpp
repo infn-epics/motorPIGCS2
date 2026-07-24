@@ -129,14 +129,21 @@ asynStatus PIInterface::sendAndReceive(const char *outputBuff, char *inputBuff, 
         asynPrint(logSink, ASYN_TRACE_ERROR|ASYN_TRACEIO_DRIVER,
                   "PIGCSController:sendAndReceive error calling writeRead, output=%s status=%d, error=%s\n",
                   outputBuff, status, m_pAsynInterface->errorMessage);
+        return status;
     }
-    while(inputBuff[strlen(inputBuff)-1] == ' ')
+    if (nRead >= (size_t)inputSize) nRead = inputSize - 1;
+    inputBuff[nRead] = '\0';
+
+    while( nRead > 0 && inputBuff[strlen(inputBuff)-1] == ' ' )
     {
         inputBuff[strlen(inputBuff)] = '\n';
         pos += nRead + 1;
         status = pasynOctetSyncIO->read(m_pAsynInterface,
                                              inputBuff+pos, inputSize-pos,
                                              TIMEOUT, &nRead, &eomReason);
+        if(status != asynSuccess) break;
+        if( pos + nRead >= (size_t)inputSize ) nRead = inputSize - pos - 1;
+        inputBuff[pos + nRead] = '\0';
 
     }
     asynPrint(logSink, ASYN_TRACEIO_DRIVER,
@@ -214,15 +221,22 @@ asynStatus PIInterface::sendAndReceive(char c, char *inputBuff, int inputSize, a
                   "PIInterface::sendAndReceive error calling writeRead, output=%d status=%d, error=%s\n",
                   int(c), status, m_pAsynInterface->errorMessage);
         //printf("PIInterface::sendAndReceive error calling writeRead, output=%d status=%d, error=%s\n", int(c), status, pInterface->errorMessage);
+        return status;
     }
 
-    while(inputBuff[strlen(inputBuff)-1] == ' ')
+    if (nRead >= (size_t)inputSize) nRead = inputSize - 1;
+    inputBuff[nRead] = '\0';
+
+    while(nRead > 0 && inputBuff[strlen(inputBuff)-1] == ' ')
     {
         pos += nRead;
         status = pasynOctetSyncIO->writeRead(m_pAsynInterface,
                                              &c, 1,
                                              inputBuff+pos, inputSize-pos,
                                              TIMEOUT, &nWrite, &nRead, &eomReason);
+        if (status != asynSuccess) break;
+        if (pos + nRead >= (size_t)inputSize) nRead = inputSize - pos - 1;
+        inputBuff[pos + nRead] = '\0';
     //printf("PIInterface::sendAndReceive(char) in while loop. inputBuff: \"%s\"\n", inputBuff);
     }
     asynPrint(logSink, ASYN_TRACEIO_DRIVER,
